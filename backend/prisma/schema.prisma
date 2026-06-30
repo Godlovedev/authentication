@@ -12,3 +12,25 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model User {
+  id             String   @id @default(uuid()) // UUID pour ne pas exposer des IDs séquentiels (sécurité)
+  email          String   @unique
+  passwordHash   String   // Stockera le mot de passe haché par Argon2
+  firstName      String?
+  lastName       String?
+  
+  // Gestion du statut du compte (OWASP Best Practices)
+  isEmailVerified Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  
+  // Sécurité avancée (2FA)
+  twoFactorSecret String?
+  isTwoFactorEnabled Boolean @default(false)
+
+  // Dates d'audit
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("users") // Renomme la table en minuscules dans la base de données
+}
