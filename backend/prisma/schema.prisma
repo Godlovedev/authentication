@@ -32,5 +32,4 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  @@map("users") // Renomme la table en minuscules dans la base de données
 }

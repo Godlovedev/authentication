@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 
 export type Payload = {
   id: string;
+  email: string;
 }
 
 @Injectable()
