@@ -6,7 +6,7 @@ export class RegisterDto {
   email!: string;
 
   @IsString()
-  @MinLength(8, { message: 'Le mot de passe doit contenir au moins 8 caractères.' })
+  @MinLength(6, { message: 'Le mot de passe doit contenir au moins 6 caractères.' })
   @IsNotEmpty({ message: 'Le mot de passe est obligatoire.' })
   password!: string;
 

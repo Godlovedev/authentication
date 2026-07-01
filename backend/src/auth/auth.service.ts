@@ -25,35 +25,50 @@ export class AuthService {
       message: 'Utilisateur enregistré avec succès.',
       user: newUser,
     };
+  };
+
+  private async getTokens(userId: string, email: string) {
+    // Le payload contient les infos de base que l'on veut retrouver plus tard
+    const payload = { sub: userId, email };
+
+    // Fabrication du token d'accès (valide 15 minutes)
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+
+    // Fabrication du token de rafraîchissement (valide 7 jours)
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+    });
+
+    // On renvoie les deux tokens fabriqués
+    return { accessToken, refreshToken };
   }
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    // 1. Rechercher l'utilisateur par son email
+    // 1. On cherche l'utilisateur et on valide son mot de passe
     const user = await this.userService.findByEmail(email);
-
-    // Sécurité OWASP : Si l'utilisateur n'existe pas, on ne dit pas "Cet email n'existe pas"
-    // On reste vague pour éviter l'énumération d'emails par un attaquant.
     if (!user) {
       throw new UnauthorizedException('Identifiants incorrects.');
     }
 
-    // 2. Vérifier si le mot de passe correspond au hash en base de données
     const isPasswordValid = await argon2.verify(user.passwordHash, password);
-
     if (!isPasswordValid) {
       throw new UnauthorizedException('Identifiants incorrects.');
     }
 
-    // 3. Préparer le contenu du Token (Payload)
-    const { id, email: userEmail } = user;
-    const payload: Payload = { id, email: userEmail };
+    // 2. On fabrique la paire de jetons (Access et Refresh)
+    const tokens = await this.getTokens(user.id, user.email);
 
-    // 4. Générer le token et retourner la réponse
+    // 3. On sauvegarde le Refresh Token (haché) dans notre registre en base de données
+    await this.userService.updateRefreshToken(user.id, tokens.refreshToken);
+
+    // 4. On renvoie un message de succès et les deux tokens au client
     return {
       message: 'Connexion réussie.',
-      access_token: this.jwtService.sign(payload),
+      ...tokens,
     };
   }
 }

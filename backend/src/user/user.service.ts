@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { RegisterDto } from 'src/auth/dto/register.dto';
 import { PrismaService } from 'src/prisma.service';
 
@@ -51,5 +52,19 @@ export class UserService {
 
     const { passwordHash, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null) {
+    let hashedRefreshToken: string | null = null;
+    
+    // Si on passe un token, on le hache avant de le stocker
+    if (refreshToken) {
+      hashedRefreshToken = await argon2.hash(refreshToken);
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { hashedRefreshToken },
+    });
   }
 }

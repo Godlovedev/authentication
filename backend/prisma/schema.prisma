@@ -4,9 +4,9 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-  moduleFormat  = "cjs"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -14,22 +14,23 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid()) // UUID pour ne pas exposer des IDs séquentiels (sécurité)
-  email          String   @unique
-  passwordHash   String   // Stockera le mot de passe haché par Argon2
-  firstName      String?
-  lastName       String?
-  
+  id           String  @id @default(uuid()) // UUID pour ne pas exposer des IDs séquentiels (sécurité)
+  email        String  @unique
+  passwordHash String // Stockera le mot de passe haché par Argon2
+  firstName    String?
+  lastName     String?
+
+  hashedRefreshToken String?
+
   // Gestion du statut du compte (OWASP Best Practices)
-  isEmailVerified Boolean  @default(false)
-  isActive        Boolean  @default(true)
-  
+  isEmailVerified Boolean @default(false)
+  isActive        Boolean @default(true)
+
   // Sécurité avancée (2FA)
-  twoFactorSecret String?
+  twoFactorSecret    String?
   isTwoFactorEnabled Boolean @default(false)
 
   // Dates d'audit
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
