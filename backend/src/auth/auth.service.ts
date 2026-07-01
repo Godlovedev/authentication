@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/register.dto';
 import * as argon2 from 'argon2';
@@ -70,5 +70,28 @@ export class AuthService {
       message: 'Connexion réussie.',
       ...tokens,
     };
+  };
+
+  async refreshTokens(userId: string, refreshToken: string) {
+    // 1. On récupère l'utilisateur en BDD pour aller voir son registre
+    const user = await this.userService.findById(userId); // Assure-toi d'avoir findById dans ton UserService
+    if (!user || !user.hashedRefreshToken) {
+      throw new ForbiddenException('Accès refusé. Session inexistante.');
+    }
+
+    // 2. On compare le token reçu avec le hash stocké en base de données
+    const refreshTokenMatches = await argon2.verify(user.hashedRefreshToken, refreshToken);
+    if (!refreshTokenMatches) {
+      throw new ForbiddenException('Accès refusé. Token invalide.');
+    }
+
+    // 3. Si tout est bon, on fabrique une nouvelle paire de tokens
+    const tokens = await this.getTokens(user.id, user.email);
+
+    // 4. On met à jour le registre avec le nouveau Refresh Token
+    await this.userService.updateRefreshToken(user.id, tokens.refreshToken);
+
+    // 5. On renvoie les nouveaux tokens
+    return tokens;
   }
 }
