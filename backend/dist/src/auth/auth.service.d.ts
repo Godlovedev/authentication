@@ -2,19 +2,15 @@ import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from "../mail.service";
 export declare class AuthService {
     private readonly userService;
     private readonly jwtService;
-    constructor(userService: UserService, jwtService: JwtService);
-    register(dto: RegisterDto): Promise<{
+    private readonly mailService;
+    constructor(userService: UserService, jwtService: JwtService, mailService: MailService);
+    register(authDto: RegisterDto): Promise<{
         message: string;
-        user: {
-            id: string;
-            email: string;
-            firstName: string | null;
-            lastName: string | null;
-            createdAt: Date;
-        };
+        userId: string;
     }>;
     private getTokens;
     login(loginDto: LoginDto): Promise<{
@@ -27,6 +23,9 @@ export declare class AuthService {
         refreshToken: string;
     }>;
     logout(userId: string): Promise<{
+        message: string;
+    }>;
+    verifyEmail(token: string): Promise<{
         message: string;
     }>;
 }

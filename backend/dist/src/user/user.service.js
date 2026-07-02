@@ -51,25 +51,15 @@ let UserService = class UserService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(dto, passwordHash) {
-        const { email, firstName, lastName } = dto;
-        const existingUser = await this.findByEmail(email);
-        if (existingUser) {
-            throw new common_1.ConflictException('Cet e-mail est déjà utilisé.');
-        }
-        return this.prisma.user.create({
+    async create(data) {
+        return await this.prisma.user.create({
             data: {
-                email,
-                passwordHash,
-                firstName,
-                lastName,
-            },
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                createdAt: true,
+                email: data.email,
+                passwordHash: data.passwordHash,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                emailVerificationHash: data.emailVerificationHash,
+                emailVerificationExpiresAt: data.emailVerificationExpiresAt,
             },
         });
     }
@@ -96,6 +86,21 @@ let UserService = class UserService {
         await this.prisma.user.update({
             where: { id: userId },
             data: { hashedRefreshToken },
+        });
+    }
+    async findByVerificationHash(hash) {
+        return await this.prisma.user.findFirst({
+            where: { emailVerificationHash: hash },
+        });
+    }
+    async verifyUserEmail(userId) {
+        return await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                isEmailVerified: true,
+                emailVerificationHash: null,
+                emailVerificationExpiresAt: null,
+            },
         });
     }
 };

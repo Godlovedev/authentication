@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -77,5 +77,13 @@ export class AuthController {
     });
 
     return { message: 'Déconnexion effectuée avec succès.' };
+  }
+
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('Le token de vérification est manquant.');
+    }
+    return await this.authService.verifyEmail(token);
   }
 }

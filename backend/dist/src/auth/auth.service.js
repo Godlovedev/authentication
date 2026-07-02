@@ -45,24 +45,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user/user.service");
+const uuid_1 = require("uuid");
 const argon2 = __importStar(require("argon2"));
 const jwt_1 = require("@nestjs/jwt");
+const mail_service_1 = require("../mail.service");
+const crypto_1 = require("crypto");
 let AuthService = class AuthService {
     userService;
     jwtService;
-    constructor(userService, jwtService) {
+    mailService;
+    constructor(userService, jwtService, mailService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.mailService = mailService;
     }
-    async register(dto) {
-        const hashedPassword = await argon2.hash(dto.password);
-        const newUser = await this.userService.create(dto, hashedPassword);
+    async register(authDto) {
+        const userExists = await this.userService.findByEmail(authDto.email);
+        if (userExists) {
+            throw new common_1.BadRequestException('Cet e-mail est déjà utilisé.');
+        }
+        const passwordHash = await argon2.hash(authDto.password);
+        const verificationTokenInPlain = (0, uuid_1.v4)();
+        const emailVerificationHash = (0, crypto_1.createHash)('sha256')
+            .update(verificationTokenInPlain)
+            .digest('hex');
+        const emailVerificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const newUser = await this.userService.create({
+            email: authDto.email,
+            passwordHash,
+            firstName: authDto.firstName,
+            lastName: authDto.lastName,
+            emailVerificationHash,
+            emailVerificationExpiresAt,
+        });
+        await this.mailService.sendVerificationEmail(newUser.email, verificationTokenInPlain);
         return {
-            message: 'Utilisateur enregistré avec succès.',
-            user: newUser,
+            message: 'Inscription réussie ! Un e-mail de validation vous a été envoyé.',
+            userId: newUser.id,
         };
     }
-    ;
     async getTokens(userId, email) {
         const payload = { id: userId, email };
         const accessToken = await this.jwtService.signAsync(payload, {
@@ -109,10 +130,22 @@ let AuthService = class AuthService {
         await this.userService.updateRefreshToken(userId, null);
         return { message: 'Déconnexion réussie.' };
     }
+    async verifyEmail(token) {
+        const hash = (0, crypto_1.createHash)('sha256').update(token).digest('hex');
+        const user = await this.userService.findByVerificationHash(hash);
+        if (!user) {
+            throw new common_1.BadRequestException('Token de vérification invalide.');
+        }
+        if (!user.emailVerificationExpiresAt || new Date() > user.emailVerificationExpiresAt) {
+            throw new common_1.BadRequestException('Le token de vérification a expiré.');
+        }
+        await this.userService.verifyUserEmail(user.id);
+        return { message: 'Votre adresse e-mail a été vérifiée avec succès ! Vous pouvez maintenant vous connecter.' };
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_service_1.UserService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [user_service_1.UserService, jwt_1.JwtService, mail_service_1.MailService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

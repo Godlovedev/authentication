@@ -1,14 +1,22 @@
-import { RegisterDto } from "../auth/dto/register.dto";
 import { PrismaService } from "../prisma.service";
 export declare class UserService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(dto: RegisterDto, passwordHash: string): Promise<{
+    create(data: any): Promise<{
         email: string;
         firstName: string | null;
         lastName: string | null;
         id: string;
+        passwordHash: string;
+        hashedRefreshToken: string | null;
+        isEmailVerified: boolean;
+        isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
+        twoFactorSecret: string | null;
+        isTwoFactorEnabled: boolean;
         createdAt: Date;
+        updatedAt: Date;
     }>;
     findByEmail(email: string): Promise<{
         email: string;
@@ -19,6 +27,8 @@ export declare class UserService {
         hashedRefreshToken: string | null;
         isEmailVerified: boolean;
         isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
         twoFactorSecret: string | null;
         isTwoFactorEnabled: boolean;
         createdAt: Date;
@@ -32,10 +42,44 @@ export declare class UserService {
         hashedRefreshToken: string | null;
         isEmailVerified: boolean;
         isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
         twoFactorSecret: string | null;
         isTwoFactorEnabled: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     updateRefreshToken(userId: string, refreshToken: string | null): Promise<void>;
+    findByVerificationHash(hash: string): Promise<{
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        id: string;
+        passwordHash: string;
+        hashedRefreshToken: string | null;
+        isEmailVerified: boolean;
+        isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
+        twoFactorSecret: string | null;
+        isTwoFactorEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
+    verifyUserEmail(userId: string): Promise<{
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        id: string;
+        passwordHash: string;
+        hashedRefreshToken: string | null;
+        isEmailVerified: boolean;
+        isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
+        twoFactorSecret: string | null;
+        isTwoFactorEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

@@ -25,6 +25,8 @@ model User {
   // Gestion du statut du compte (OWASP Best Practices)
   isEmailVerified Boolean @default(false)
   isActive        Boolean @default(true)
+  emailVerificationHash String? // Le token de vérification haché (SHA-256)
+  emailVerificationExpiresAt DateTime? // Date d'expiration du token (ex: 24h)
 
   // Sécurité avancée (2FA)
   twoFactorSecret    String?

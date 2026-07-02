@@ -7,30 +7,15 @@ import { PrismaService } from 'src/prisma.service';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: RegisterDto, passwordHash: string) {
-    // 1. Déstructuration propre du DTO au début
-    const { email, firstName, lastName } = dto;
-
-    // 2. Vérification de l'existence
-    const existingUser = await this.findByEmail(email);
-    if (existingUser) {
-      throw new ConflictException('Cet e-mail est déjà utilisé.');
-    }
-
-    // 3. Insertion propre en base de données grâce aux variables déstructurées
-    return this.prisma.user.create({
+  async create(data: any) {
+    return await this.prisma.user.create({
       data: {
-        email,
-        passwordHash,
-        firstName,
-        lastName,
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        createdAt: true,
+        email: data.email,
+        passwordHash: data.passwordHash,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        emailVerificationHash: data.emailVerificationHash,
+        emailVerificationExpiresAt: data.emailVerificationExpiresAt,
       },
     });
   }
@@ -67,4 +52,28 @@ export class UserService {
       data: { hashedRefreshToken },
     });
   }
+
+  /**
+   * Trouve un utilisateur grâce au hash de son token de vérification
+   */
+  async findByVerificationHash(hash: string) {
+    return await this.prisma.user.findFirst({
+      where: { emailVerificationHash: hash },
+    });
+  }
+
+  /**
+   * Valide l'e-mail de l'utilisateur et nettoie les jetons en BDD
+   */
+  async verifyUserEmail(userId: string) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isEmailVerified: true,
+        emailVerificationHash: null, // On vide le token pour qu'il ne soit plus réutilisable
+        emailVerificationExpiresAt: null,
+      },
+    });
+  }
+
 }

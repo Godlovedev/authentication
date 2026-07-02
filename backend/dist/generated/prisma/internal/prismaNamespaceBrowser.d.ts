@@ -27,6 +27,8 @@ export declare const UserScalarFieldEnum: {
     readonly hashedRefreshToken: "hashedRefreshToken";
     readonly isEmailVerified: "isEmailVerified";
     readonly isActive: "isActive";
+    readonly emailVerificationHash: "emailVerificationHash";
+    readonly emailVerificationExpiresAt: "emailVerificationExpiresAt";
     readonly twoFactorSecret: "twoFactorSecret";
     readonly isTwoFactorEnabled: "isTwoFactorEnabled";
     readonly createdAt: "createdAt";

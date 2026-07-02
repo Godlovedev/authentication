@@ -7,13 +7,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     register(registerDto: RegisterDto): Promise<{
         message: string;
-        user: {
-            id: string;
-            email: string;
-            firstName: string | null;
-            lastName: string | null;
-            createdAt: Date;
-        };
+        userId: string;
     }>;
     login(loginDto: LoginDto, res: Express.Response): Promise<{
         message: string;
@@ -23,6 +17,9 @@ export declare class AuthController {
         access_token: string;
     }>;
     logout(req: any, res: Express.Response): Promise<{
+        message: string;
+    }>;
+    verifyEmail(token: string): Promise<{
         message: string;
     }>;
 }

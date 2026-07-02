@@ -21,6 +21,8 @@ export declare class JwtStrategy extends JwtStrategy_base {
         hashedRefreshToken: string | null;
         isEmailVerified: boolean;
         isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
         twoFactorSecret: string | null;
         isTwoFactorEnabled: boolean;
         createdAt: Date;

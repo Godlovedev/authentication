@@ -99,6 +99,12 @@ let AuthController = class AuthController {
         });
         return { message: 'Déconnexion effectuée avec succès.' };
     }
+    async verifyEmail(token) {
+        if (!token) {
+            throw new common_1.BadRequestException('Le token de vérification est manquant.');
+        }
+        return await this.authService.verifyEmail(token);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -134,6 +140,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
+__decorate([
+    (0, common_1.Get)('verify-email'),
+    __param(0, (0, common_1.Query)('token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyEmail", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

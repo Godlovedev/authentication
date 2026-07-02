@@ -1,31 +1,57 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/register.dto';
+import { v4 as uuidv4 } from 'uuid';
 import * as argon2 from 'argon2';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { Payload } from './jwt.strategy';
+import { MailService } from 'src/mail.service';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
+  constructor(private readonly userService: UserService, private readonly jwtService: JwtService, private readonly mailService: MailService) {}
 
   /**
    * Logique globale d'inscription d'un utilisateur
    */
-  async register(dto: RegisterDto) {
-    // 1. Hachage du mot de passe sécurisé avec Argon2
-    const hashedPassword = await argon2.hash(dto.password);
+  async register(authDto: RegisterDto) {
+    const userExists = await this.userService.findByEmail(authDto.email);
+    if (userExists) {
+      throw new BadRequestException('Cet e-mail est déjà utilisé.');
+    }
 
-    // 2. Délégation de la création au UserService
-    const newUser = await this.userService.create(dto, hashedPassword);
+    // 1. Le mot de passe : Sécurisé par Argon2 (Lent et robuste)
+    const passwordHash = await argon2.hash(authDto.password);
 
-    // 3. Retour d'une réponse propre pour le client (le mot de passe n'y est pas grâce au 'select')
+    // 2. Le Token d'e-mail : Un UUID en clair pour le client
+    const verificationTokenInPlain = uuidv4();
+    
+    // 3. Le stockage : Sécurisé par SHA-256 (Ultra rapide, protège la BDD sans détruire les performances)
+    const emailVerificationHash = createHash('sha256')
+      .update(verificationTokenInPlain)
+      .digest('hex');
+
+    const emailVerificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // 4. Enregistrement via le UserService
+    const newUser = await this.userService.create({
+      email: authDto.email,
+      passwordHash,
+      firstName: authDto.firstName,
+      lastName: authDto.lastName,
+      emailVerificationHash,
+      emailVerificationExpiresAt,
+    });
+
+    // 5. Envoi du mail
+    await this.mailService.sendVerificationEmail(newUser.email, verificationTokenInPlain);
+
     return {
-      message: 'Utilisateur enregistré avec succès.',
-      user: newUser,
+      message: 'Inscription réussie ! Un e-mail de validation vous a été envoyé.',
+      userId: newUser.id,
     };
-  };
+  }
 
   private async getTokens(userId: string, email: string) {
     // Le payload contient les infos de base que l'on veut retrouver plus tard
@@ -100,5 +126,28 @@ export class AuthService {
     // On passe le hash à null dans la base de données
     await this.userService.updateRefreshToken(userId, null);
     return { message: 'Déconnexion réussie.' };
+  }
+
+  async verifyEmail(token: string) {
+    // 1. On hache le token reçu en clair pour pouvoir le comparer à la BDD
+    const hash = createHash('sha256').update(token).digest('hex');
+
+    // 2. On cherche l'utilisateur via le UserService
+    const user = await this.userService.findByVerificationHash(hash);
+
+    // 3. Si aucun utilisateur n'a ce token, il est invalide
+    if (!user) {
+      throw new BadRequestException('Token de vérification invalide.');
+    }
+
+    // 4. On vérifie si le token n'a pas expiré (limite des 24h)
+    if (!user.emailVerificationExpiresAt || new Date() > user.emailVerificationExpiresAt) {
+      throw new BadRequestException('Le token de vérification a expiré.');
+    }
+
+    // 5. On valide l'utilisateur en BDD via le UserService
+    await this.userService.verifyUserEmail(user.id);
+
+    return { message: 'Votre adresse e-mail a été vérifiée avec succès ! Vous pouvez maintenant vous connecter.' };
   }
 }

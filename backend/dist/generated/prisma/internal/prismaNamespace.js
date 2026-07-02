@@ -74,6 +74,8 @@ exports.UserScalarFieldEnum = {
     hashedRefreshToken: 'hashedRefreshToken',
     isEmailVerified: 'isEmailVerified',
     isActive: 'isActive',
+    emailVerificationHash: 'emailVerificationHash',
+    emailVerificationExpiresAt: 'emailVerificationExpiresAt',
     twoFactorSecret: 'twoFactorSecret',
     isTwoFactorEnabled: 'isTwoFactorEnabled',
     createdAt: 'createdAt',

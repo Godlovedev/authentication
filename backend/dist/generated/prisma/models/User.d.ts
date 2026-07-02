@@ -15,6 +15,8 @@ export type UserMinAggregateOutputType = {
     hashedRefreshToken: string | null;
     isEmailVerified: boolean | null;
     isActive: boolean | null;
+    emailVerificationHash: string | null;
+    emailVerificationExpiresAt: Date | null;
     twoFactorSecret: string | null;
     isTwoFactorEnabled: boolean | null;
     createdAt: Date | null;
@@ -29,6 +31,8 @@ export type UserMaxAggregateOutputType = {
     hashedRefreshToken: string | null;
     isEmailVerified: boolean | null;
     isActive: boolean | null;
+    emailVerificationHash: string | null;
+    emailVerificationExpiresAt: Date | null;
     twoFactorSecret: string | null;
     isTwoFactorEnabled: boolean | null;
     createdAt: Date | null;
@@ -43,6 +47,8 @@ export type UserCountAggregateOutputType = {
     hashedRefreshToken: number;
     isEmailVerified: number;
     isActive: number;
+    emailVerificationHash: number;
+    emailVerificationExpiresAt: number;
     twoFactorSecret: number;
     isTwoFactorEnabled: number;
     createdAt: number;
@@ -58,6 +64,8 @@ export type UserMinAggregateInputType = {
     hashedRefreshToken?: true;
     isEmailVerified?: true;
     isActive?: true;
+    emailVerificationHash?: true;
+    emailVerificationExpiresAt?: true;
     twoFactorSecret?: true;
     isTwoFactorEnabled?: true;
     createdAt?: true;
@@ -72,6 +80,8 @@ export type UserMaxAggregateInputType = {
     hashedRefreshToken?: true;
     isEmailVerified?: true;
     isActive?: true;
+    emailVerificationHash?: true;
+    emailVerificationExpiresAt?: true;
     twoFactorSecret?: true;
     isTwoFactorEnabled?: true;
     createdAt?: true;
@@ -86,6 +96,8 @@ export type UserCountAggregateInputType = {
     hashedRefreshToken?: true;
     isEmailVerified?: true;
     isActive?: true;
+    emailVerificationHash?: true;
+    emailVerificationExpiresAt?: true;
     twoFactorSecret?: true;
     isTwoFactorEnabled?: true;
     createdAt?: true;
@@ -125,6 +137,8 @@ export type UserGroupByOutputType = {
     hashedRefreshToken: string | null;
     isEmailVerified: boolean;
     isActive: boolean;
+    emailVerificationHash: string | null;
+    emailVerificationExpiresAt: Date | null;
     twoFactorSecret: string | null;
     isTwoFactorEnabled: boolean;
     createdAt: Date;
@@ -148,6 +162,8 @@ export type UserWhereInput = {
     hashedRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null;
     isEmailVerified?: Prisma.BoolFilter<"User"> | boolean;
     isActive?: Prisma.BoolFilter<"User"> | boolean;
+    emailVerificationHash?: Prisma.StringNullableFilter<"User"> | string | null;
+    emailVerificationExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null;
     isTwoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
@@ -162,6 +178,8 @@ export type UserOrderByWithRelationInput = {
     hashedRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder;
     isEmailVerified?: Prisma.SortOrder;
     isActive?: Prisma.SortOrder;
+    emailVerificationHash?: Prisma.SortOrderInput | Prisma.SortOrder;
+    emailVerificationExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder;
     isTwoFactorEnabled?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -179,6 +197,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     hashedRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null;
     isEmailVerified?: Prisma.BoolFilter<"User"> | boolean;
     isActive?: Prisma.BoolFilter<"User"> | boolean;
+    emailVerificationHash?: Prisma.StringNullableFilter<"User"> | string | null;
+    emailVerificationExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null;
     isTwoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
@@ -193,6 +213,8 @@ export type UserOrderByWithAggregationInput = {
     hashedRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder;
     isEmailVerified?: Prisma.SortOrder;
     isActive?: Prisma.SortOrder;
+    emailVerificationHash?: Prisma.SortOrderInput | Prisma.SortOrder;
+    emailVerificationExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder;
     isTwoFactorEnabled?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -213,6 +235,8 @@ export type UserScalarWhereWithAggregatesInput = {
     hashedRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     isEmailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean;
     isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean;
+    emailVerificationHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
+    emailVerificationExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null;
     twoFactorSecret?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     isTwoFactorEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string;
@@ -227,6 +251,8 @@ export type UserCreateInput = {
     hashedRefreshToken?: string | null;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: string | null;
+    emailVerificationExpiresAt?: Date | string | null;
     twoFactorSecret?: string | null;
     isTwoFactorEnabled?: boolean;
     createdAt?: Date | string;
@@ -241,6 +267,8 @@ export type UserUncheckedCreateInput = {
     hashedRefreshToken?: string | null;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: string | null;
+    emailVerificationExpiresAt?: Date | string | null;
     twoFactorSecret?: string | null;
     isTwoFactorEnabled?: boolean;
     createdAt?: Date | string;
@@ -255,6 +283,8 @@ export type UserUpdateInput = {
     hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    emailVerificationHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerificationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -269,6 +299,8 @@ export type UserUncheckedUpdateInput = {
     hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    emailVerificationHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerificationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -283,6 +315,8 @@ export type UserCreateManyInput = {
     hashedRefreshToken?: string | null;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: string | null;
+    emailVerificationExpiresAt?: Date | string | null;
     twoFactorSecret?: string | null;
     isTwoFactorEnabled?: boolean;
     createdAt?: Date | string;
@@ -297,6 +331,8 @@ export type UserUpdateManyMutationInput = {
     hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    emailVerificationHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerificationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -311,6 +347,8 @@ export type UserUncheckedUpdateManyInput = {
     hashedRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isEmailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    emailVerificationHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerificationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     isTwoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -325,6 +363,8 @@ export type UserCountOrderByAggregateInput = {
     hashedRefreshToken?: Prisma.SortOrder;
     isEmailVerified?: Prisma.SortOrder;
     isActive?: Prisma.SortOrder;
+    emailVerificationHash?: Prisma.SortOrder;
+    emailVerificationExpiresAt?: Prisma.SortOrder;
     twoFactorSecret?: Prisma.SortOrder;
     isTwoFactorEnabled?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -339,6 +379,8 @@ export type UserMaxOrderByAggregateInput = {
     hashedRefreshToken?: Prisma.SortOrder;
     isEmailVerified?: Prisma.SortOrder;
     isActive?: Prisma.SortOrder;
+    emailVerificationHash?: Prisma.SortOrder;
+    emailVerificationExpiresAt?: Prisma.SortOrder;
     twoFactorSecret?: Prisma.SortOrder;
     isTwoFactorEnabled?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -353,6 +395,8 @@ export type UserMinOrderByAggregateInput = {
     hashedRefreshToken?: Prisma.SortOrder;
     isEmailVerified?: Prisma.SortOrder;
     isActive?: Prisma.SortOrder;
+    emailVerificationHash?: Prisma.SortOrder;
+    emailVerificationExpiresAt?: Prisma.SortOrder;
     twoFactorSecret?: Prisma.SortOrder;
     isTwoFactorEnabled?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -367,6 +411,9 @@ export type NullableStringFieldUpdateOperationsInput = {
 export type BoolFieldUpdateOperationsInput = {
     set?: boolean;
 };
+export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null;
+};
 export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string;
 };
@@ -379,6 +426,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     hashedRefreshToken?: boolean;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: boolean;
+    emailVerificationExpiresAt?: boolean;
     twoFactorSecret?: boolean;
     isTwoFactorEnabled?: boolean;
     createdAt?: boolean;
@@ -393,6 +442,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     hashedRefreshToken?: boolean;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: boolean;
+    emailVerificationExpiresAt?: boolean;
     twoFactorSecret?: boolean;
     isTwoFactorEnabled?: boolean;
     createdAt?: boolean;
@@ -407,6 +458,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     hashedRefreshToken?: boolean;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: boolean;
+    emailVerificationExpiresAt?: boolean;
     twoFactorSecret?: boolean;
     isTwoFactorEnabled?: boolean;
     createdAt?: boolean;
@@ -421,12 +474,14 @@ export type UserSelectScalar = {
     hashedRefreshToken?: boolean;
     isEmailVerified?: boolean;
     isActive?: boolean;
+    emailVerificationHash?: boolean;
+    emailVerificationExpiresAt?: boolean;
     twoFactorSecret?: boolean;
     isTwoFactorEnabled?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "hashedRefreshToken" | "isEmailVerified" | "isActive" | "twoFactorSecret" | "isTwoFactorEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>;
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "hashedRefreshToken" | "isEmailVerified" | "isActive" | "emailVerificationHash" | "emailVerificationExpiresAt" | "twoFactorSecret" | "isTwoFactorEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>;
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "User";
     objects: {};
@@ -439,6 +494,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         hashedRefreshToken: string | null;
         isEmailVerified: boolean;
         isActive: boolean;
+        emailVerificationHash: string | null;
+        emailVerificationExpiresAt: Date | null;
         twoFactorSecret: string | null;
         isTwoFactorEnabled: boolean;
         createdAt: Date;
@@ -508,6 +565,8 @@ export interface UserFieldRefs {
     readonly hashedRefreshToken: Prisma.FieldRef<"User", 'String'>;
     readonly isEmailVerified: Prisma.FieldRef<"User", 'Boolean'>;
     readonly isActive: Prisma.FieldRef<"User", 'Boolean'>;
+    readonly emailVerificationHash: Prisma.FieldRef<"User", 'String'>;
+    readonly emailVerificationExpiresAt: Prisma.FieldRef<"User", 'DateTime'>;
     readonly twoFactorSecret: Prisma.FieldRef<"User", 'String'>;
     readonly isTwoFactorEnabled: Prisma.FieldRef<"User", 'Boolean'>;
     readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>;
