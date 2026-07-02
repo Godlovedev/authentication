@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as Express from 'express';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,10 +36,8 @@ export class AuthController {
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  async refresh(
-    @Request() req: any, // Ici, req.user contient l'objet renvoyé par le validate() de ta stratégie
-    @Res({ passthrough: true }) res: Express.Response,
-  ) {
+  async refresh(@Request() req: any, // Ici, req.user contient l'objet renvoyé par le validate() de ta stratégie
+    @Res({ passthrough: true }) res: Express.Response,) {
     // 1. On extrait l'ID et le token en clair que notre stratégie a préparé dans req.user
     const userId = req.user.id;
     const refreshToken = req.user.refreshToken;
@@ -58,5 +57,25 @@ export class AuthController {
     return {
       access_token: tokens.accessToken,
     };
+  };
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard) // 🔒 Sécurisé par l'Access Token classique
+  async logout(@Request() req: any, @Res({ passthrough: true }) res: Express.Response,) {
+    // 1. On récupère l'ID de l'utilisateur connecté grâce au Guard
+    const userId = req.user.id;
+
+    // 2. On supprime le token de la base de données
+    await this.authService.logout(userId);
+
+    // 3. On ordonne au client d'effacer le cookie HTTP-Only
+    // Pour effacer un cookie, on renvoie un cookie vide avec une date d'expiration passée (maxAge: 0)
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return { message: 'Déconnexion effectuée avec succès.' };
   }
 }

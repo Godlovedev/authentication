@@ -29,7 +29,7 @@ export class AuthService {
 
   private async getTokens(userId: string, email: string) {
     // Le payload contient les infos de base que l'on veut retrouver plus tard
-    const payload = { sub: userId, email };
+    const payload = { id: userId, email };
 
     // Fabrication du token d'accès (valide 15 minutes)
     const accessToken = await this.jwtService.signAsync(payload, {
@@ -93,5 +93,12 @@ export class AuthService {
 
     // 5. On renvoie les nouveaux tokens
     return tokens;
+  };
+
+
+  async logout(userId: string) {
+    // On passe le hash à null dans la base de données
+    await this.userService.updateRefreshToken(userId, null);
+    return { message: 'Déconnexion réussie.' };
   }
 }

@@ -9,10 +9,10 @@ export declare class AuthService {
     register(dto: RegisterDto): Promise<{
         message: string;
         user: {
+            id: string;
             email: string;
             firstName: string | null;
             lastName: string | null;
-            id: string;
             createdAt: Date;
         };
     }>;
@@ -25,5 +25,8 @@ export declare class AuthService {
     refreshTokens(userId: string, refreshToken: string): Promise<{
         accessToken: string;
         refreshToken: string;
+    }>;
+    logout(userId: string): Promise<{
+        message: string;
     }>;
 }

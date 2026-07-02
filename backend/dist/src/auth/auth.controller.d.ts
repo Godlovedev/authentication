@@ -8,10 +8,10 @@ export declare class AuthController {
     register(registerDto: RegisterDto): Promise<{
         message: string;
         user: {
+            id: string;
             email: string;
             firstName: string | null;
             lastName: string | null;
-            id: string;
             createdAt: Date;
         };
     }>;
@@ -21,5 +21,8 @@ export declare class AuthController {
     }>;
     refresh(req: any, res: Express.Response): Promise<{
         access_token: string;
+    }>;
+    logout(req: any, res: Express.Response): Promise<{
+        message: string;
     }>;
 }

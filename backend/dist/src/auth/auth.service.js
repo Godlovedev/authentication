@@ -64,7 +64,7 @@ let AuthService = class AuthService {
     }
     ;
     async getTokens(userId, email) {
-        const payload = { sub: userId, email };
+        const payload = { id: userId, email };
         const accessToken = await this.jwtService.signAsync(payload, {
             expiresIn: '15m',
         });
@@ -103,6 +103,11 @@ let AuthService = class AuthService {
         const tokens = await this.getTokens(user.id, user.email);
         await this.userService.updateRefreshToken(user.id, tokens.refreshToken);
         return tokens;
+    }
+    ;
+    async logout(userId) {
+        await this.userService.updateRefreshToken(userId, null);
+        return { message: 'Déconnexion réussie.' };
     }
 };
 exports.AuthService = AuthService;
